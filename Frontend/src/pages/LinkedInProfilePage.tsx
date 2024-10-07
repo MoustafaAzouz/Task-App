@@ -17,12 +17,12 @@ const LinkedInProfilePage: React.FC = () => {
     };
 
     return (
-        <Box className="linkedin-profile-page p-6 bg-gray-100 min-h-screen flex flex-col items-center">
-            <Typography variant="h4" component="h1" className="font-bold mb-6 text-center text-blue-800">
+        <Box className="linkedin-profile-page p-5 bg-gray-100 min-h-screen flex flex-col items-center">
+            <Typography variant="h4" component="h1" className="font-bold  text-center text-blue-500">
                 LinkedIn Profile Fetcher
             </Typography>
 
-            <Box className="flex justify-center mb-6 w-full" maxWidth="sm">
+            <Box className="flex justify-center mt-5 w-full" maxWidth="sm">
                 <TextField
                     label="Enter LinkedIn Profile URL"
                     variant="outlined"
@@ -35,7 +35,7 @@ const LinkedInProfilePage: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={handleFetchProfile}
-                    className="ml-2"
+                    className="mr-5"
                 >
                     Get
                 </Button>

@@ -18,7 +18,7 @@ const LinkedInProfilePage: React.FC = () => {
 
     return (
         <Box className="linkedin-profile-page p-6 bg-gray-100 min-h-screen flex flex-col items-center">
-            <Typography variant="h4" component="h1" className="font-bold mb-6 text-center text-blue-800">
+            <Typography variant="h4" component="h1" className="font-bold mb-6 text-center ">
                 LinkedIn Profile Fetcher
             </Typography>
 

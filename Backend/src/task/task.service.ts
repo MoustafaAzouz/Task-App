@@ -37,22 +37,22 @@ export class TaskService {
 
    
 
-  async findById(id: number, user: User): Promise<Task> {
+  async findById(id: number): Promise<Task> {
     const task = await this.taskRepository.findOne({
-      where: { id, user: { id: user.id } }, 
-      relations: ['user'], 
+      where: { id }, 
     });
 
     if (!task) {
       throw new NotFoundException(`Task with ID ${id} not found.`);
     }
+    console.log('Fetched Task:', task); // Log the task to see what is returned
 
     return task;
   }
 
-async updateById(id: number, updateTaskDto: UpdateTaskDto, user: User): Promise<Task> {
+async updateById(id: number, updateTaskDto: UpdateTaskDto): Promise<Task> {
 
-  const task = await this.findById(id, user);
+  const task = await this.findById(id);
 
   if (!Object.keys(updateTaskDto).length) {
     throw new BadRequestException('No update data provided.'); 
@@ -68,8 +68,8 @@ async updateById(id: number, updateTaskDto: UpdateTaskDto, user: User): Promise<
 
 
 
-  async deleteById(id: number, user: User): Promise<void> {
-    const task = await this.findById(id, user);  
+  async deleteById(id: number): Promise<void> {
+    const task = await this.findById(id);  
     await this.taskRepository.remove(task); 
   }
 

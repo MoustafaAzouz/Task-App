@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/slices/authsSlice";
@@ -13,11 +13,15 @@ const schema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),
     email: z.string().email("Invalid email format"),
     password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Confirm Password must be at least 6 characters"),
+}).refine(data => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"], // This will point the error to the confirmPassword field
 });
 
 type FormData = z.infer<typeof schema>;
 
-const RegisterForm: React.FC = () => {
+const RegisterForm = () => {
     const {
         handleSubmit,
         formState: { errors, touchedFields },
@@ -28,11 +32,12 @@ const RegisterForm: React.FC = () => {
             email: '',
             password: '',
             name: '',
+            confirmPassword: '', // Default value for confirm password
         },
     });
 
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -42,12 +47,11 @@ const RegisterForm: React.FC = () => {
       
         try {
             const response = await api.post('/signup', data);
-            const { token, user } = response.data;
-      
-            // Store token in local storage
+            const { token } = response.data;
+
             localStorage.setItem('token', token);
       
-            dispatch(login({ user, token }));
+            dispatch(login({ token }));
             navigate("/");
         } catch (error: any) {
             setError(error.response?.data?.message || "Something went wrong. Please try again.");
@@ -112,6 +116,24 @@ const RegisterForm: React.FC = () => {
                     variant="outlined"
                     type="password"
                     placeholder='Enter your password'
+                    fullWidth
+                    disabled={loading}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <Key />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+                <TextField
+                    label="Confirm Password"
+                    {...register('confirmPassword')}
+                    error={!!errors.confirmPassword && touchedFields.confirmPassword}
+                    helperText={errors.confirmPassword?.message}
+                    variant="outlined"
+                    type="password"
+                    placeholder='Confirm your password'
                     fullWidth
                     disabled={loading}
                     InputProps={{

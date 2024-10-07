@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks'; 
 import { fetchTaskById, deleteTask, updateTask } from '../redux/slices/taskSlice'; 
 import { useParams, useNavigate } from 'react-router-dom';
 import { Task } from '../Types/task';
+import { Typography } from '@mui/material';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const TaskDetails: React.FC = () => {
+const TaskDetails = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -12,27 +15,26 @@ const TaskDetails: React.FC = () => {
   const [updatedData, setUpdatedData] = useState<Partial<Task>>({});
 
   useEffect(() => {
-    const user = { token: 'your-token' }; 
     if (id) {
-      dispatch(fetchTaskById({ id: Number(id), user })); 
+      dispatch(fetchTaskById(Number(id))); 
     }
   }, [dispatch, id]);
 
   const handleEdit = () => {
     if (updatedData.title || updatedData.description || updatedData.category) {
       dispatch(updateTask({ id: Number(id), taskData: updatedData }));
-      alert("Task updated successfully!");
+      toast.success("Task updated successfully!"); 
     } else {
-      alert("No changes made to the task.");
+      toast.info("No changes made to the task.");
     }
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this task?")) {
-      dispatch(deleteTask(Number(id))); 
-      alert("Task deleted successfully!");
+    dispatch(deleteTask(Number(id)));
+    toast.success("Task deleted successfully!"); 
+    setTimeout(() => {
       navigate('/');
-    }
+    }, 1000); 
   };
 
   if (loading) return <p className="text-center">Loading...</p>;
@@ -40,48 +42,55 @@ const TaskDetails: React.FC = () => {
   if (!selectedTask) return <p className="text-center">No task found.</p>;
 
   return (
-    <div className="p-6 bg-gray-50  max-w-xl mx-auto">
-   
-
-      <h3 className="text-xl font-semibold mb-2 text-center mb- ">Edit Task</h3>
-      <input
-        type="text"
-        placeholder={selectedTask.title || "Enter task title"}
-        value={updatedData.title || ""}
-        onChange={(e) => setUpdatedData({ ...updatedData, title: e.target.value })}
-        className="border border-gray-300 rounded p-2 mb-4 w-full"
-      />
-
-      <textarea
-        placeholder={selectedTask.description || "Enter task description"} 
-        value={updatedData.description || ""}
-        onChange={(e) => setUpdatedData({ ...updatedData, description: e.target.value })}
-        className="border border-gray-300 rounded p-2 mb-4 w-full"
-      />
-      
-      <select
-        value={updatedData.category || ""}
-        onChange={(e) => setUpdatedData({ ...updatedData, category: e.target.value })}
-        className="border border-gray-300 rounded p-2 mb-4 w-full"
+    <div className="p-8 max-w-xl mx-auto">
+      <ToastContainer /> 
+      <Typography
+        sx={{ color: 'rgba(59, 130, 246, var(--tw-bg-opacity))', textAlign: "center" }}
+        variant="h4"
+        component="h1"
       >
-        <option value="">Select Category</option>
-        <option value="personal">Personal</option>
-        <option value="work">Work</option>
-        <option value="shopping">Shopping</option>
-        <option value="health">Health</option>
-        <option value="fitness">Fitness</option>
-        <option value="education">Education</option>
-        <option value="finance">Finance</option>
-        <option value="travel">Travel</option>
-        <option value="family">Family</option>
-        <option value="home">Home</option>
-      </select>
-         <div className='text-center mt-2'>
+        Edit Task
+      </Typography>
 
-           <button onClick={handleEdit} className="bg-blue-500 text-white p-[6px] rounded mr-2">Update</button>
-          <button onClick={handleDelete} className="bg-red-500 text-white p-[6px] rounded ">Delete</button>
-         </div>
-     
+      <div className='mt-14'>
+        <input
+          type="text"
+          placeholder={selectedTask.title}
+          value={updatedData.title || ""}
+          onChange={(e) => setUpdatedData({ ...updatedData, title: e.target.value })}
+          className="border border-gray-300 rounded p-2 mb-4 w-full"
+        />
+
+        <textarea
+          placeholder={selectedTask.description || "Enter task description"} 
+          value={updatedData.description || ""}
+          onChange={(e) => setUpdatedData({ ...updatedData, description: e.target.value })}
+          className="border border-gray-300 rounded p-2 mb-4 w-full"
+        />
+
+        <select
+          value={updatedData.category || ""}
+          onChange={(e) => setUpdatedData({ ...updatedData, category: e.target.value })}
+          className="border border-gray-300 rounded p-2 mb-4 w-full"
+        >
+          <option value="">Select Category</option>
+          <option value="personal">Personal</option>
+          <option value="work">Work</option>
+          <option value="shopping">Shopping</option>
+          <option value="health">Health</option>
+          <option value="fitness">Fitness</option>
+          <option value="education">Education</option>
+          <option value="finance">Finance</option>
+          <option value="travel">Travel</option>
+          <option value="family">Family</option>
+          <option value="home">Home</option>
+        </select>
+
+        <div className='text-center mt-2'>
+          <button onClick={handleEdit} className="bg-blue-500 text-white p-[6px] rounded mr-2">Update</button>
+          <button onClick={handleDelete} className="bg-red-500 text-white p-[6px] rounded">Delete</button>
+        </div>
+      </div>
     </div>
   );
 };

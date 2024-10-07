@@ -24,7 +24,7 @@ export const fetchAllTasks = createAsyncThunk('tasks/fetch', async (userId: numb
 export const fetchTaskById = createAsyncThunk(
   'tasks/fetchById',
   async ({ id, user }: { id: number; user: any }) => {
-    const response = await api.get(`/task/${id}`, { headers: { Authorization: `Bearer ${user.token}` } });
+    const response = await api.get(`/task/find/${id}`, { headers: { Authorization: `Bearer ${user.token}` } });
     return response.data as Task; 
   }
 )

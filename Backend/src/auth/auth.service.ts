@@ -15,7 +15,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(signUpDto: SignupDto): Promise<{ token: string; user: Partial<User> }> {
+  async signUp(signUpDto: SignupDto): Promise<{ token: string}> {
     const { name, email, password } = signUpDto;
 
     const emailExists = await this.userRepository.findOne({ where: { email } });
@@ -38,10 +38,10 @@ export class AuthService {
       name: user.name,
     });
 
-    return { token, user: { email: user.email, name: user.name } };
+    return { token};
   }
 
-  async login(loginDto: LoginDto): Promise<{ token: string; user: Partial<User> }> {
+  async login(loginDto: LoginDto): Promise<{ token: string}> {
     const { email, password } = loginDto;
 
     const user = await this.userRepository.findOne({ where: { email } });
@@ -60,6 +60,6 @@ export class AuthService {
       name: user.name,
     });
 
-    return { token, user: { email: user.email, name: user.name } };
+    return { token };
   }
 }

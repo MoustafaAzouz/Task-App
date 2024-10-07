@@ -6,17 +6,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import CreateTaskModal from '../components/CreateTaskModal';
 import SearchCategory from '../components/SearchCategory';
-import { Box, Button, Typography, IconButton } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import { Box, Button, Typography, IconButton, Grid, Container } from '@mui/material'; // Added Container
 import Logout from '../components/Logout'; 
 import LinkedInIcon from '@mui/icons-material/LinkedIn'; 
+import { ToastContainer } from 'react-toastify';
 
 interface DecodedToken {
     id: number;
     name: string;
 }
 
-const TaskPage: React.FC = () => {
+const TaskPage = () => {
     const dispatch = useAppDispatch();
     const { tasks } = useAppSelector((state) => state.tasks);
     const navigate = useNavigate(); 
@@ -50,49 +50,57 @@ const TaskPage: React.FC = () => {
 
     const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if ((e.target as HTMLElement).classList.contains('completion-box')) {
+            
             e.preventDefault();
+
         }
     };
+
     const handleLinkedInClick = () => {
         navigate('/linkedin-profile'); 
     };
 
-    return (
-        <Box className="p-5 bg-gray-100 min-h-screen mx-auto" position="relative"> 
-            <Typography 
-                sx={{ color: 'rgba(59, 130, 246, var(--tw-bg-opacity))' }} 
-                variant="h4" 
-                component="h1" 
-                align="center" 
-                gutterBottom 
-            >
-                Your Tasks
-            </Typography>
+    return ( 
 
+
+
+  
+        <Container maxWidth="lg" sx={{ mx: 'auto', py: 2 }}> {/* Main container centered */}
+            {/* Header box containing the title and buttons */}
             <Box 
                 display="flex" 
-                justifyContent="flex-end" 
-                mb={2} 
-                position="absolute" 
-                top={20} 
-                right={20} 
-                alignItems="center"
+                justifyContent="space-between" 
+                alignItems="center" 
+                mb={4} 
+                px={2} 
+                py={1} 
+                sx={{ borderBottom: '1px solid lightgray' }} 
             >
-                <IconButton 
-                    onClick={handleLinkedInClick} 
-                    sx={{ mr: 2 }} 
+                <Typography 
+                    sx={{ color: 'rgba(59, 130, 246, var(--tw-bg-opacity))' }} 
+                    variant="h4" 
+                    component="h1" 
                 >
-                    <LinkedInIcon sx={{ color: '#0e76a8' }} /> 
-                </IconButton>
+                    Your Tasks
+                </Typography>
+                <Box display="flex" alignItems="center" justifyContent="flex-end">
+                    <IconButton 
+                        onClick={handleLinkedInClick} 
+                        sx={{ mr: 2 }} 
+                    >
+                        <LinkedInIcon sx={{ color: '#0e76a8' }} /> 
+                    </IconButton>
 
-                <Logout />
+                    <Logout />
+                </Box>
             </Box>
 
-            <Box display="flex" justifyContent="space-between" mb={4}>
+            <Box mb={4}>
                 <SearchCategory />
             </Box>
 
-            <Grid container spacing={2}>
+            {/* Task Cards grid */}
+            <Grid container spacing={3} justifyContent="center"> {/* Increased spacing */}
                 {tasks.length > 0 ? (
                     tasks.map((task) => (
                         <Grid item xs={12} sm={6} md={4} key={task.id}>
@@ -110,11 +118,13 @@ const TaskPage: React.FC = () => {
                 )}
             </Grid>
 
+            {/* Create Task Modal */}
             {isModalOpen && (
                 <CreateTaskModal
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
                     username={username}
+                    
                 />
             )}
 
@@ -138,7 +148,19 @@ const TaskPage: React.FC = () => {
             >
                 Add
             </Button>
-        </Box>
+
+            <ToastContainer 
+                position="top-right" 
+                autoClose={3000} 
+                hideProgressBar 
+                newestOnTop 
+                closeOnClick 
+                rtl={false} 
+                pauseOnFocusLoss 
+                draggable 
+                pauseOnHover 
+            />
+        </Container>
     );
 };
 

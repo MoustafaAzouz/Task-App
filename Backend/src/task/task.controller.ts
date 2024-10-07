@@ -18,10 +18,10 @@ export class TaskController {
 
         return this.taskService.findAllByUserId(Number(id));
     }
-    @Get(':id')
+    @Get('find/:id')
     @UseGuards(AuthGuard())
-    async getTaskById(@Param('id') id: string, @Req() req): Promise<Task> {
-        return this.taskService.findById(Number(id), req.user);
+    async getTaskById(@Param('id') id: string): Promise<Task> {
+        return this.taskService.findById(Number(id));
     }
 
     @Post()
@@ -36,16 +36,14 @@ export class TaskController {
     async updateTaskById(
         @Param('id') id: string,
         @Body() updateTaskDto: UpdateTaskDto,
-        @Req() req,
     ): Promise<Task> {
-        console.log('Updating task:', { id, updateTaskDto, user: req.user });
-        return this.taskService.updateById(Number(id), updateTaskDto, req.user);
+        return this.taskService.updateById(Number(id), updateTaskDto);
     }
 
     @Delete(':id')
     @UseGuards(AuthGuard())
-    async deleteTaskById(@Param('id') id: string, @Req() req): Promise<void> {
-        return this.taskService.deleteById(Number(id), req.user);
+    async deleteTaskById(@Param('id') id: string): Promise<void> {
+        return this.taskService.deleteById(Number(id));
     }
 
   @Get('/:category/:id')
